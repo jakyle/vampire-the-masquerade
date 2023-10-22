@@ -1,4 +1,4 @@
 export type PassiveResult = {
-  succeeded: boolean;
-  hunger: number;
+	succeeded: boolean;
+	hunger: number;
 };

@@ -1,14 +1,14 @@
-import type { DiceResult } from "./dice-result.model";
-import type { PassiveResult } from "./passive.model";
+import type { DiceResult } from './dice-result.model';
+import type { PassiveResult } from './passive.model';
 
 export type CharacterRollPassive = {
-  id: string;
-  roll?: DiceResult;
-  passive?: PassiveResult;
+	id: string;
+	roll?: DiceResult;
+	passive?: PassiveResult;
 };
 
 export type RollPassiveLog = {
-  id: string;
-  characterData: CharacterRollPassive[];
-  timestamp: number;
+	id: string;
+	characterData: CharacterRollPassive[];
+	timestamp: number;
 };

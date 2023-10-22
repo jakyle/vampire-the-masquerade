@@ -1,13 +1,13 @@
 export const attributeNames = [
-  "strength",
-  "dexterity",
-  "stamina",
+	'strength',
+	'dexterity',
+	'stamina',
 
-  "charisma",
-  "manipulation",
-  "composure",
+	'charisma',
+	'manipulation',
+	'composure',
 
-  "intelligence",
-  "wits",
-  "resolve",
+	'intelligence',
+	'wits',
+	'resolve'
 ] as const;

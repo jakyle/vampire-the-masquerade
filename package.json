@@ -40,7 +40,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@felte/validator-zod": "^1.0.17",
 		"@tauri-apps/api": "^1.5.1",
+		"felte": "^1.2.12",
 		"uuid": "^9.0.1"
 	}
 }
