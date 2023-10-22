@@ -18,6 +18,7 @@
 	import { skillNames } from '../data/skills';
 	import { attributeNames } from '../data/attributes';
 	import { selectedAttributeStore, selectedSkillStore } from '$lib/store/characters';
+	import { onDestroy } from 'svelte';
 
 	const dispatchRoll = createEventDispatcher<{
 		rollData: RollFormValues;
@@ -35,10 +36,12 @@
 		extend: validator({ schema })
 	});
 
-	data.subscribe((values) => {
+	const unsubscribe = data.subscribe((values) => {
 		selectedAttributeStore.set(values.attribute);
 		selectedSkillStore.set(values.skill);
 	});
+
+	onDestroy(unsubscribe);
 </script>
 
 <form use:form class="flex w-full justify-center">

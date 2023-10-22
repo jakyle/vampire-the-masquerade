@@ -6,7 +6,7 @@
 	import { selectedAttributeStore, selectedSkillStore } from '$lib/store/characters';
 
 	export let character: CharacterInfo;
-	$: selectedSkill =  $selectedSkillStore as keyof CharacterInfo | '';
+	$: selectedSkill = $selectedSkillStore as keyof CharacterInfo | '';
 	$: selectedAttribute = $selectedAttributeStore as keyof CharacterInfo | '';
 
 	const dispatchSelectCharacter = createEventDispatcher<{
@@ -34,7 +34,6 @@
 			id: character.id
 		});
 	};
-
 </script>
 
 <div

@@ -14,8 +14,8 @@ charactersStore.subscribe((value) => {
 	localStorage.setItem('characters', JSON.stringify(value));
 });
 
-type AttributeName = typeof attributeNames[number];
+type AttributeName = (typeof attributeNames)[number];
 export const selectedAttributeStore = writable<AttributeName | ''>('');
 
-type SkillName = typeof skillNames[number];
+type SkillName = (typeof skillNames)[number];
 export const selectedSkillStore = writable<SkillName | ''>('');

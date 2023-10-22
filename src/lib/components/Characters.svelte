@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { CharacterInfo } from '../model/character-info.model';
 	import type { Character, Hunger } from '../model/character.model';
-	import type { DiceResult } from '../model/dice-result.model';
-	import type { PassiveResult } from '../model/passive.model';
 	import { charactersStore } from '../store/characters';
 	import CharacterCard from './CharacterCard.svelte';
 	import { passiveRollLogStore } from '../store/roll-logs';
@@ -11,6 +8,7 @@
 	import Logs from './Logs.svelte';
 	import RollForm, { type RollFormValues } from './RollForm.svelte';
 	import { goto } from '$app/navigation';
+	import { checkPassives, rollCharacters } from '$lib/util/rolls';
 
 	export let characters: Character[];
 
@@ -38,138 +36,41 @@
 
 	const action = (event: CustomEvent<RollFormValues>) => {
 		const { action, skill, attribute, difficulty, modifier } = event.detail;
+		let actionType: 'roll' | 'passive';
+		let characterPassiveRolls: CharacterInfo[];
 		switch (action) {
 			case 'roll':
-				roll(skill, attribute, difficulty, modifier);
+				characterPassiveRolls = rollCharacters(skill, attribute, difficulty, modifier, selectedCharacters);
+				actionType = 'roll';
 				break;
 			case 'passive':
-				passive(skill, attribute, difficulty);
-				break;
-			default:
+				characterPassiveRolls = checkPassives(skill, attribute, difficulty, selectedCharacters);
+				actionType = 'passive';
 				break;
 		}
+
+		if (actionType && characterPassiveRolls && characterPassiveRolls.length > 0) {
+			updateLog(characterPassiveRolls, actionType);
+		}
+
+		clear();
 	};
 
-	const roll = (
-		selectedSkill: string,
-		selectedAttribute: string,
-		difficulty: number,
-		modifier: number
-	) => {
-		clear();
-		const selectedCharactersWithRoll = selectedCharacters.map((character) => {
-			if (character.selected) {
-				const skill = selectedSkill ? (character[selectedSkill as keyof Character] as number) : 0;
-				const attribute = selectedAttribute
-					? (character[selectedAttribute as keyof Character] as number)
-					: 0;
-
-				const dicePoolWithoutHunger = Math.max(skill + attribute + modifier, 0);
-
-				const hunger = character.hunger;
-
-				const rolls = Array(dicePoolWithoutHunger - Math.min(dicePoolWithoutHunger, hunger))
-					.fill(0)
-					.map(() => Math.floor(Math.random() * 10) + 1);
-
-				const hungerRolls = Array(Math.min(dicePoolWithoutHunger, hunger))
-					.fill(0)
-					.map(() => Math.floor(Math.random() * 10) + 1);
-
-				const successes =
-					rolls.filter((roll) => roll >= 6).length + hungerRolls.filter((roll) => roll >= 6).length;
-
-				const halfMessyCritical = hungerRolls.filter((roll) => roll === 10).length;
-
-				const halfCritical = rolls.filter((roll) => roll === 10).length;
-
-				const criticals = Math.floor(halfMessyCritical + halfCritical / 2);
-
-				const messyCritical = criticals > 0 && halfMessyCritical > 0;
-
-				const succeeded = successes >= difficulty;
-
-				const bestialFailure = hungerRolls.filter((roll) => roll === 1).length >= 1 && !succeeded;
-
-				const roll: DiceResult = {
-					successes: successes + criticals,
-					criticals,
-					messyCritical,
-					bestialFailure,
-					succeeded
-				};
-
-				return {
-					...character,
-					roll
-				};
-			} else {
-				return { ...character };
-			}
-		});
-
+	const updateLog = (characterInfo: CharacterInfo[], key: 'passive' | 'roll') => {
 		passiveRollLogStore.update((log) => {
 			const newLog = [...log];
 			newLog.push({
 				id: uuidv4().toString(),
-				characterData: selectedCharactersWithRoll
-					.filter((character) => character.roll)
+				characterData: characterInfo
+					.filter((character) => character[key])
 					.map((character) => ({
 						id: character.id,
-						roll: character.roll
+						[key]: character[key]
 					})),
 				timestamp: Date.now()
 			});
 			return newLog;
 		});
-
-		selectedCharacters = selectedCharactersWithRoll;
-	};
-
-	const passive = (selectedSkill: string, selectedAttribute: string, difficulty: number) => {
-		clear();
-		const selectedCharactersWithPassive = selectedCharacters.map((character) => {
-			if (character.selected) {
-				const skill = selectedSkill
-					? (character[selectedSkill as keyof CharacterInfo] as number)
-					: 0;
-				const attribute = selectedAttribute
-					? (character[selectedAttribute as keyof CharacterInfo] as number)
-					: 0;
-				const hunger = character.hunger;
-
-				const passive: PassiveResult = {
-					hunger,
-					succeeded: skill + attribute >= difficulty
-				};
-
-				return {
-					...character,
-					passive
-				};
-			} else {
-				return { ...character };
-			}
-		});
-
-		console.log(selectedCharactersWithPassive);
-
-		passiveRollLogStore.update((log) => {
-			const newLog = [...log];
-			newLog.push({
-				id: uuidv4().toString(),
-				characterData: selectedCharactersWithPassive
-					.filter((character) => character.passive)
-					.map((character) => ({
-						id: character.id,
-						passive: character.passive
-					})),
-				timestamp: Date.now()
-			});
-			return newLog;
-		});
-
-		selectedCharacters = selectedCharactersWithPassive;
 	};
 
 	const clear = () => {

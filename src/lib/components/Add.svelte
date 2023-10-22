@@ -161,7 +161,7 @@
 
 			return characters;
 		});
-		goto('home');
+		goto('/');
 	};
 </script>
 
