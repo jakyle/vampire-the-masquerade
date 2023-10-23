@@ -7,6 +7,10 @@ export const charactersStore = writable<Character[]>(
 	JSON.parse(localStorage.getItem('characters') ?? '[]') as unknown as Character[]
 );
 
+export const deleteCharacterById = (id: string) => {
+	charactersStore.update((characters) => characters.filter((character) => character.id !== id));
+};
+
 export const characterById = (id: string) =>
 	derived(charactersStore, ($characters) => $characters.find((character) => character.id === id));
 

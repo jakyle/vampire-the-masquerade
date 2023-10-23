@@ -3,6 +3,7 @@ import type { PassiveResult } from './passive.model';
 
 export type CharacterRollPassive = {
 	id: string;
+	name: string;
 	roll?: DiceResult;
 	passive?: PassiveResult;
 };

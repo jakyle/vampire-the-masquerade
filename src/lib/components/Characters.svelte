@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { CharacterInfo } from '../model/character-info.model';
 	import type { Character, Hunger } from '../model/character.model';
-	import { charactersStore } from '../store/characters';
+	import { charactersStore, deleteCharacterById } from '../store/characters';
 	import CharacterCard from './CharacterCard.svelte';
 	import { passiveRollLogStore } from '../store/roll-logs';
 	import { v4 as uuidv4 } from 'uuid';
@@ -21,6 +21,15 @@
 			};
 		});
 
+	$: if (characters) {
+		selectedCharacters = characters
+			.filter((character) => character.isActive)
+			.map((character) => ({
+				...character,
+				selected: false
+			}));
+	}
+
 	const onEdit = (event: CustomEvent<string>) => {
 		const id = event.detail;
 		goto(`character-sheet/${id}`);
@@ -34,26 +43,41 @@
 		selectedCharacters = newCharacters;
 	};
 
+	const deleteWithId = (event: CustomEvent<string>) => {
+		const id = event.detail;
+		deleteCharacterById(id);
+	};
+
 	const action = (event: CustomEvent<RollFormValues>) => {
 		const { action, skill, attribute, difficulty, modifier } = event.detail;
 		let actionType: 'roll' | 'passive';
-		let characterPassiveRolls: CharacterInfo[];
+		let characterPassiveRolls = clear(selectedCharacters);
 		switch (action) {
 			case 'roll':
-				characterPassiveRolls = rollCharacters(skill, attribute, difficulty, modifier, selectedCharacters);
+				characterPassiveRolls = rollCharacters(
+					skill,
+					attribute,
+					difficulty,
+					modifier,
+					characterPassiveRolls
+				);
 				actionType = 'roll';
 				break;
 			case 'passive':
-				characterPassiveRolls = checkPassives(skill, attribute, difficulty, selectedCharacters);
+				characterPassiveRolls = checkPassives(skill, attribute, difficulty, characterPassiveRolls);
 				actionType = 'passive';
 				break;
 		}
 
-		if (actionType && characterPassiveRolls && characterPassiveRolls.length > 0) {
+		if (
+			actionType &&
+			characterPassiveRolls &&
+			characterPassiveRolls.length > 0 &&
+			characterPassiveRolls.some((character) => character[actionType])
+		) {
 			updateLog(characterPassiveRolls, actionType);
+			selectedCharacters = characterPassiveRolls;
 		}
-
-		clear();
 	};
 
 	const updateLog = (characterInfo: CharacterInfo[], key: 'passive' | 'roll') => {
@@ -65,7 +89,8 @@
 					.filter((character) => character[key])
 					.map((character) => ({
 						id: character.id,
-						[key]: character[key]
+						[key]: character[key],
+						name: character.name
 					})),
 				timestamp: Date.now()
 			});
@@ -73,15 +98,15 @@
 		});
 	};
 
-	const clear = () => {
-		selectedCharacters = selectedCharacters.map((character) => {
-			return {
-				...character,
-				roll: undefined,
-				passive: undefined
-			};
-		});
-	};
+	const clear = (characters: CharacterInfo[]) =>
+		characters.map(
+			(character) =>
+				({
+					...character,
+					roll: undefined,
+					passive: undefined
+				} as CharacterInfo)
+		);
 
 	const updateHunger = (event: CustomEvent<{ hunger: Hunger; id: string }>) => {
 		const { hunger, id } = event.detail;
@@ -110,6 +135,7 @@
 								on:selectCharacter={selectCharacter}
 								on:editCharacter={onEdit}
 								on:updateHunger={updateHunger}
+								on:deleteCharacter={deleteWithId}
 							/>
 						</li>
 					{/each}

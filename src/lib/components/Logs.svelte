@@ -29,8 +29,6 @@
 		acc[character.id] = character;
 		return acc;
 	}, {} as Record<string, Character>);
-
-	$: console.log(logs);
 </script>
 
 <div class="flex h-full flex-col gap-1 bg-stone-400 px-2 py-2">
@@ -48,13 +46,21 @@
 								class="border-collapse rounded-sm text-2xl text-white [&>tr>*]:border [&>tr>*]:border-green-950 [&>tr>*]:text-center [&>tr>td]:bg-green-100 [&>tr>td]:text-stone-900 [&>tr>th]:bg-green-700"
 							>
 								<tr>
-									<th class="text-center" colspan="2">{characterMap[data.id].name}</th>
+									<th class="text-center" colspan={data.passive.total === undefined ? 2 : 3}
+										>{characterMap?.[data.id]?.name ?? data.name}</th
+									>
 								</tr>
 								<tr>
+									{#if data.passive.total !== undefined}
+										<th>🧮</th>
+									{/if}
 									<th>🏁</th>
 									<th>🩸</th>
 								</tr>
 								<tr>
+									{#if data.passive.total !== undefined}
+										<td>{data.passive.total}</td>
+									{/if}
 									<td>{data.passive.succeeded ? '✅' : '❌'}</td>
 									<td>{data.passive.hunger}</td>
 								</tr>
@@ -66,13 +72,15 @@
 								class="border-collapse rounded-sm text-2xl text-white [&>tr>*]:border [&>tr>*]:border-green-950 [&>tr>*]:text-center [&>tr>td]:bg-green-100 [&>tr>td]:text-stone-900 [&>tr>th]:bg-green-700"
 							>
 								<tr>
-									<th class="text-center" colspan="5">{characterMap[data.id].name}</th>
+									<th class="text-center" colspan="5"
+										>{characterMap?.[data.id]?.name ?? data.name}</th
+									>
 								</tr>
 								<tr>
 									<th>👍</th>
 									<th>💥</th>
-									<th>💩</th>
 									<th>🦇</th>
+									<th>💩</th>
 									<th>🏁</th>
 								</tr>
 								<tr>
