@@ -4,6 +4,7 @@
 	import Slider from './Slider.svelte';
 	import type { Hunger } from '../model/character.model';
 	import { selectedAttributeStore, selectedSkillStore } from '$lib/store/characters';
+	import DottedRange from './DottedRange.svelte';
 
 	export let character: CharacterInfo;
 	let isDeleting: boolean;
@@ -144,6 +145,7 @@
 		</table>
 		<div class="flex-none">
 			<Slider on:input={updateHunger} bind:value={character.hunger} label="Hunger" />
+			<DottedRange />
 		</div>
 	{:else}
 		<div class="flex flex-col justify-center items-center gap-4">

@@ -21,5 +21,5 @@
 		bind:value
 		class="w-full cursor-pointer rounded-lg bg-stone-200 dark:bg-stone-700"
 	/>
-	<input on:input bind:value class="w-6 rounded bg-white pl-1.5 font-bold text-black" />
+	<input on:input bind:value class="rounded px-1 py-0 w-6 bg-white font-bold text-black" />
 </div>
