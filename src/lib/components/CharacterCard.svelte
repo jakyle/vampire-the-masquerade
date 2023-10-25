@@ -5,6 +5,7 @@
 	import type { Hunger } from '../model/character.model';
 	import { selectedAttributeStore, selectedSkillStore } from '$lib/store/characters';
 	import DottedRange from './DottedRange.svelte';
+	import Dice from './Dice.svelte';
 
 	export let character: CharacterInfo;
 	let isDeleting: boolean;
@@ -50,6 +51,7 @@
 	class:outline-offset-2={character.selected}
 	class:outline={character.selected}
 >
+	<Dice roll={5}/>
 	{#if !isDeleting}
 		<div class="flex flex-1 flex-col">
 			<div class="flex flex-row gap-1">
@@ -145,7 +147,6 @@
 		</table>
 		<div class="flex-none">
 			<Slider on:input={updateHunger} bind:value={character.hunger} label="Hunger" />
-			<DottedRange />
 		</div>
 	{:else}
 		<div class="flex flex-col justify-center items-center gap-4">

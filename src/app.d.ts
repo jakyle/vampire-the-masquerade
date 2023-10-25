@@ -7,6 +7,26 @@ declare global {
 		// interface PageData {}
 		// interface Platform {}
 	}
+
+	interface Array<T> {
+		tap(callBack: (value: T, index: number, array: T[]) => void): T[];
+
+		toRecord<V, R = Record<V, T>>(keyFn: (value: T, index?: number, array?: T[]) => V): R;
+		toRecord<V, U, R = Record<V, U>>(
+			keyFn: (value: T, index?: number, array?: T[]) => V,
+			valueFn: (value: T, index?: number, array?: T[]) => U
+		): R;
+		toRecord<V, U, R = Record<V, U>>(
+			keyFn: (value: T, index?: number, array?: T[]) => V,
+			value: U
+		): R;
+	}
+	interface String {
+		toTitleCase(): string;
+	}
 }
 
 export {};
+
+/// <reference types="svelte" />
+/// <reference types="vite/client" />

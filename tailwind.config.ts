@@ -10,7 +10,36 @@ export default {
 		extend: {
 			gridTemplateRows: {
 				9: 'repeat(9, minmax(0, 1fr))'
+			},
+			spacing: {
+				'5.5': '1.375rem',
+				'128': '32rem'
+			},
+
+			minWidth: {
+				'1/4': '25%',
+				'1/2': '50%',
+				'3/4': '75%',
+				'5.5': '1.375rem',
+				'6': '1.5rem',
+				'7': '1.75rem',
+				'8': '2rem'
+			},
+			maxHeight: {
+				'1/4': '25%',
+				'1/2': '50%',
+				'3/4': '75%',
+				'5.5': '1.375rem',
+				'6': '1.5rem',
+				'7': '1.75rem',
+				'8': '2rem'
 			}
+		},
+		data: {
+			circle: 'shape~="circle"',
+			square: 'shape~="square"',
+			horizontal: 'direction~="horizontal"',
+			vertical: 'direction~="vertical"'
 		}
 	},
 	plugins: [
@@ -18,10 +47,9 @@ export default {
 		forms,
 		plugin(({ addVariant, matchUtilities, theme }) => {
 			addVariant('hocus', ['&:hover', '&:focus']);
-			// Square utility
 			matchUtilities(
 				{
-					square: (value) => ({
+					sq: (value) => ({
 						width: value,
 						height: value
 					})
