@@ -51,7 +51,6 @@
 	class:outline-offset-2={character.selected}
 	class:outline={character.selected}
 >
-	<Dice roll={5}/>
 	{#if !isDeleting}
 		<div class="flex flex-1 flex-col">
 			<div class="flex flex-row gap-1">
