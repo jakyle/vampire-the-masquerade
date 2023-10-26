@@ -75,16 +75,23 @@
 			characterPassiveRolls.length > 0 &&
 			characterPassiveRolls.some((character) => character[actionType])
 		) {
-			updateLog(characterPassiveRolls, actionType);
+			updateLog(characterPassiveRolls, actionType, difficulty, modifier);
 			selectedCharacters = characterPassiveRolls;
 		}
 	};
 
-	const updateLog = (characterInfo: CharacterInfo[], key: 'passive' | 'roll') => {
+	const updateLog = (
+		characterInfo: CharacterInfo[],
+		key: 'passive' | 'roll',
+		difficulty: number,
+		modifier: number
+	) => {
 		passiveRollLogStore.update((log) => {
 			const newLog = [...log];
 			newLog.push({
 				id: uuidv4().toString(),
+				difficulty,
+				modifier,
 				characterData: characterInfo
 					.filter((character) => character[key])
 					.map((character) => ({

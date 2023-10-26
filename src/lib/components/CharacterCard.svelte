@@ -4,8 +4,6 @@
 	import Slider from './Slider.svelte';
 	import type { Hunger } from '../model/character.model';
 	import { selectedAttributeStore, selectedSkillStore } from '$lib/store/characters';
-	import DottedRange from './DottedRange.svelte';
-	import Dice from './Dice.svelte';
 
 	export let character: CharacterInfo;
 	let isDeleting: boolean;

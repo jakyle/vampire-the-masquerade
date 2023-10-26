@@ -3,7 +3,7 @@
 	import { portal } from 'svelte-portal';
 	import { innerHeight, innerWidth } from '$lib/store/window';
 
-	export let el: HTMLElement | undefined;
+	export let el: HTMLElement | null;
 	export let direction: 'left' | 'right' | 'top' | 'bottom' = 'right';
 	export let delay = 500;
 
@@ -72,8 +72,8 @@
 	}
 
 	onDestroy(() => {
-		el!.removeEventListener('mouseenter', mouseEnter);
-		el!.removeEventListener('mouseleave', mouseLeave);
+		el?.removeEventListener('mouseenter', mouseEnter);
+		el?.removeEventListener('mouseleave', mouseLeave);
 		isVisible = false;
 		isHovered = false;
 	});

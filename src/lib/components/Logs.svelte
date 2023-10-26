@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Character } from '../model/character.model';
 	import type { RollPassiveLog } from '../model/roll-log';
+	import PassiveTable from './PassiveTable.svelte';
+	import RollTable from './RollTable.svelte';
 	export let logs: RollPassiveLog[];
 	export let characters: Character[];
 
@@ -42,55 +44,14 @@
 				<div class="flex flex-row flex-wrap justify-center gap-2">
 					{#each log.characterData as data}
 						{#if data.passive !== undefined}
-							<table
-								class="border-collapse rounded-sm text-2xl text-white [&>tr>*]:border [&>tr>*]:border-green-950 [&>tr>*]:text-center [&>tr>td]:bg-green-100 [&>tr>td]:text-stone-900 [&>tr>th]:bg-green-700"
-							>
-								<tr>
-									<th class="text-center" colspan={data.passive.total === undefined ? 2 : 3}
-										>{characterMap?.[data.id]?.name ?? data.name}</th
-									>
-								</tr>
-								<tr>
-									{#if data.passive.total !== undefined}
-										<th>🧮</th>
-									{/if}
-									<th>🏁</th>
-									<th>🩸</th>
-								</tr>
-								<tr>
-									{#if data.passive.total !== undefined}
-										<td>{data.passive.total}</td>
-									{/if}
-									<td>{data.passive.succeeded ? '✅' : '❌'}</td>
-									<td>{data.passive.hunger}</td>
-								</tr>
-							</table>
+							<PassiveTable
+								name={characterMap?.[data.id]?.name ?? data.name}
+								passive={data.passive}
+							/>
 						{/if}
 
 						{#if data.roll !== undefined}
-							<table
-								class="border-collapse rounded-sm text-2xl text-white [&>tr>*]:border [&>tr>*]:border-green-950 [&>tr>*]:text-center [&>tr>td]:bg-green-100 [&>tr>td]:text-stone-900 [&>tr>th]:bg-green-700"
-							>
-								<tr>
-									<th class="text-center" colspan="5"
-										>{characterMap?.[data.id]?.name ?? data.name}</th
-									>
-								</tr>
-								<tr>
-									<th>👍</th>
-									<th>💥</th>
-									<th>🦇</th>
-									<th>💩</th>
-									<th>🏁</th>
-								</tr>
-								<tr>
-									<td>{data.roll.successes}</td>
-									<td>{data.roll.criticals}</td>
-									<td>{data.roll.messyCritical ? '✅' : '❌'}</td>
-									<td>{data.roll.bestialFailure ? '✅' : '❌'}</td>
-									<td>{data.roll.succeeded ? '✅' : '❌'}</td>
-								</tr>
-							</table>
+							<RollTable name={characterMap?.[data.id]?.name ?? data.name} roll={data.roll} />
 						{/if}
 					{/each}
 				</div>

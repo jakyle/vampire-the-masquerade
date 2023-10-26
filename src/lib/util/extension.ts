@@ -8,12 +8,12 @@ function tap<T>(callback: (value: T, index?: number, array?: T[]) => void) {
 	return this;
 }
 
-function toRecord<T>(
+function toRecord<T, U>(
 	keyFn: (value: T, index?: number, array?: T[]) => string | number | symbol,
-	value?: (value: T, index?: number, array?: T[]) => any | any
+	value?: (value: T, index?: number, array?: T[]) => U | U
 ) {
-	const record: T = this.reduce(
-		(obj, curr, currentIndex: number, array: Array<any>) => ({
+	return this.reduce(
+		(obj, curr, currentIndex: number, array: Array<T>) => ({
 			...obj,
 			[keyFn(curr, currentIndex, array)]:
 				value === undefined
@@ -24,8 +24,6 @@ function toRecord<T>(
 		}),
 		{}
 	);
-
-	return record;
 }
 
 function toTitleCase() {

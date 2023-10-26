@@ -4,4 +4,6 @@ export type DiceResult = {
 	bestialFailure: boolean;
 	messyCritical: boolean;
 	succeeded: boolean;
+	rolls: number[];
+	hungerRolls: number[];
 };

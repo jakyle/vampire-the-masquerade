@@ -23,11 +23,13 @@ export const rollCharacters = (
 
 			const rolls = Array(dicePoolWithoutHunger - Math.min(dicePoolWithoutHunger, hunger))
 				.fill(0)
-				.map(() => Math.floor(Math.random() * 10) + 1);
+				.map(() => Math.floor(Math.random() * 10) + 1)
+				.sort();
 
 			const hungerRolls = Array(Math.min(dicePoolWithoutHunger, hunger))
 				.fill(0)
-				.map(() => Math.floor(Math.random() * 10) + 1);
+				.map(() => Math.floor(Math.random() * 10) + 1)
+				.sort();
 
 			const successes =
 				rolls.filter((roll) => roll >= 6).length + hungerRolls.filter((roll) => roll >= 6).length;
@@ -49,7 +51,9 @@ export const rollCharacters = (
 				criticals,
 				messyCritical,
 				bestialFailure,
-				succeeded
+				succeeded,
+				rolls,
+				hungerRolls
 			};
 
 			return {

@@ -12,4 +12,6 @@ export type RollPassiveLog = {
 	id: string;
 	characterData: CharacterRollPassive[];
 	timestamp: number;
+	difficulty: number;
+	modifier: number;
 };
