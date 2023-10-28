@@ -23,7 +23,7 @@ export const rollCharacters = (
 
 			const rolls = Array(dicePoolWithoutHunger - Math.min(dicePoolWithoutHunger, hunger))
 				.fill(0)
-				.map(() => Math.floor(Math.random() * 10) + 1)
+				.map(() => Math.floor(Math.random() * 10) + 1) // roll dem dice baby!
 				.sort();
 
 			const hungerRolls = Array(Math.min(dicePoolWithoutHunger, hunger))

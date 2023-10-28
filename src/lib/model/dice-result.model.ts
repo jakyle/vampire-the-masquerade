@@ -1,4 +1,5 @@
 export type DiceResult = {
+	characterId: string;
 	successes: number;
 	criticals: number;
 	bestialFailure: boolean;

@@ -9,6 +9,7 @@
 	import RollForm, { type RollFormValues } from './RollForm.svelte';
 	import { goto } from '$app/navigation';
 	import { checkPassives, rollCharacters } from '$lib/util/rolls';
+	import { rollTension } from '$lib/store/roll-tension';
 
 	export let characters: Character[];
 
@@ -75,8 +76,13 @@
 			characterPassiveRolls.length > 0 &&
 			characterPassiveRolls.some((character) => character[actionType])
 		) {
-			updateLog(characterPassiveRolls, actionType, difficulty, modifier);
-			selectedCharacters = characterPassiveRolls;
+
+
+			rollTension.set("tension");
+			setTimeout(() => {
+				updateLog(characterPassiveRolls, actionType, difficulty, modifier);
+				selectedCharacters = characterPassiveRolls;
+			}, 2000)
 		}
 	};
 

@@ -33,7 +33,7 @@ export default {
 				'6': '1.5rem',
 				'7': '1.75rem',
 				'8': '2rem'
-			}
+			},
 		},
 		data: {
 			circle: 'shape~="circle"',
