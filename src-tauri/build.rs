@@ -1,3 +1,5 @@
+#![feature(async_closure)]
+
 fn main() {
-  tauri_build::build()
+    tauri_build::build()
 }

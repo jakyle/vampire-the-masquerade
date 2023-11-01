@@ -1,5 +1,7 @@
 <script lang="ts">
-	import type { Character } from '../model/character.model';
+	import { isDiceResult } from '$lib/model/dice-result.model';
+	import { isPassiveResult } from '$lib/model/passive.model';
+import type { Character } from '../model/character.model';
 	import type { RollPassiveLog } from '../model/roll-log';
 	import PassiveTable from './PassiveTable.svelte';
 	import RollTable from './RollTable.svelte';
@@ -10,7 +12,7 @@
 
 	$: filteredLogs = logs.filter((log) => {
 		const timeStamp = new Date(log.timestamp).toLocaleString().toLocaleLowerCase().trim();
-		const characterNames = log.characterData.map((data) =>
+		const characterNames = log.results.map((data) =>
 			characters
 				.find((character) => character.id === data.id)
 				?.name.toLocaleLowerCase()
@@ -42,16 +44,16 @@
 					📅 {new Date(log.timestamp).toLocaleString()}
 				</h4>
 				<div class="flex flex-row flex-wrap justify-center gap-2">
-					{#each log.characterData as data}
-						{#if data.passive !== undefined}
+					{#each log.results as data}
+						{#if isPassiveResult(data)}
 							<PassiveTable
-								name={characterMap?.[data.id]?.name ?? data.name}
-								passive={data.passive}
+								name={characterMap?.[data.id]?.name ?? data.characterName}
+								passive={data}
 							/>
 						{/if}
 
-						{#if data.roll !== undefined}
-							<RollTable name={characterMap?.[data.id]?.name ?? data.name} roll={data.roll} />
+						{#if isDiceResult(data)}
+							<RollTable name={characterMap?.[data.id]?.name ?? data.characterName} roll={data} />
 						{/if}
 					{/each}
 				</div>

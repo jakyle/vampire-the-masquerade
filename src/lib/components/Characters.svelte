@@ -98,7 +98,7 @@
 				id: uuidv4().toString(),
 				difficulty,
 				modifier,
-				characterData: characterInfo
+				results: characterInfo
 					.filter((character) => character[key])
 					.map((character) => ({
 						id: character.id,

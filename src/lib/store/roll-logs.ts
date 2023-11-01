@@ -5,7 +5,7 @@ export const passiveRollLogStore = writable<RollPassiveLog[]>(
 	(JSON.parse(localStorage.getItem('roll-log') ?? '[]') as RollPassiveLog[])
 		.map((roll) => ({
 			...roll,
-			characterData: roll.characterData.filter((character) => character.name !== undefined)
+			characterData: roll.results.filter((result) => result.characterName !== undefined)
 		}))
 		.filter((roll) => roll.characterData.length > 0)
 );

@@ -18,7 +18,7 @@
 		.fill(0)
 		.map((_, i) => i + 1);
 
-	let elements = options.toRecord((option) => option, null as unknown as HTMLElement);
+	let elements = options.toRecord((option) => option, null as HTMLElement | null);
 
 	function setValue(val: number) {
 		let newValue: number;
