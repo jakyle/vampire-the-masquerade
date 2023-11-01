@@ -6,12 +6,12 @@ use crate::{
         action_result::{ActionResult, ActionResultType},
         action_type::ActionType,
         dto::{
-            action_log::AddActionLog, dice_result::AddDiceResult, passive_result::AddPassiveResult,
+            action_log::AddActionLog, character::Character, dice_result::AddDiceResult,
+            passive_result::AddPassiveResult,
         },
     },
     services::{
-        action_log_service::insert_new_action_log,
-        character_service::{select_character_by_id, select_characters_by_ids},
+        action_log_service::insert_new_action_log, character_service::select_characters_by_ids,
         passive_result_service::insert_new_passive_result,
         roll_result_service::insert_new_dice_result,
     },
@@ -32,7 +32,7 @@ pub fn get_action_result(roll_info: &ActionInfo) -> Result<ActionResult, String>
                         &roll_info.attribute,
                         roll_info.difficulty,
                         roll_info.modifier,
-                        character.id.as_str(),
+                        character,
                         &action_log.id,
                     )
                 })
@@ -49,7 +49,7 @@ pub fn get_action_result(roll_info: &ActionInfo) -> Result<ActionResult, String>
                         &roll_info.skill,
                         &roll_info.attribute,
                         roll_info.difficulty,
-                        character.id.as_str(),
+                        character,
                         &action_log.id,
                     )
                 })
@@ -68,11 +68,9 @@ fn roll_dice(
     selected_attribute: &Option<&str>,
     difficulty: i32,
     modifier: i32,
-    character_id: &str,
+    character: &Character,
     log_id: &str,
 ) -> Result<AddDiceResult, String> {
-    let character = select_character_by_id(&character_id);
-
     let skill = selected_skill
         .as_ref()
         .map(|skill| character.try_get_skill(skill))
@@ -123,11 +121,9 @@ fn check_passive(
     selected_skill: &Option<&str>,
     selected_attribute: &Option<&str>,
     difficulty: i32,
-    character_id: &str,
+    character: &Character,
     log_id: &str,
 ) -> Result<AddPassiveResult, String> {
-    let character = select_character_by_id(&character_id);
-
     let skill = selected_skill
         .as_ref()
         .map(|skill| character.try_get_skill(skill))

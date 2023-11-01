@@ -10,7 +10,7 @@ pub fn insert_new_passive_result(
 
     new_dice_result
         .iter()
-        .map(|die| db::passive_result::PassiveResult::from(die))
+        .map(db::passive_result::PassiveResult::from)
         .map(|die| {
             diesel::insert_into(passive_results::table)
                 .values(&die)

@@ -36,12 +36,6 @@ impl<T> From<Vec<T>> for TextArray<T> {
     }
 }
 
-impl<T> Into<Vec<T>> for TextArray<T> {
-    fn into(self) -> Vec<T> {
-        self.0
-    }
-}
-
 impl<T> Deref for TextArray<T> {
     type Target = Vec<T>;
 

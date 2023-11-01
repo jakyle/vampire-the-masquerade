@@ -7,19 +7,15 @@ pub fn build_menu() -> Menu {
 }
 
 pub fn menu_event_handler(event: WindowMenuEvent) {
-    match event.menu_item_id() {
-        "about" => {
-            let handle = event.window().app_handle();
+    if event.menu_item_id() == "about" {
+        let handle = event.window().app_handle();
 
-            let _ =
-                tauri::WindowBuilder::new(&handle, "about", tauri::WindowUrl::App("/about".into()))
-                    .menu(Menu::new())
-                    .inner_size(200., 200.)
-                    .max_inner_size(200., 400.)
-                    .resizable(false)
-                    .build()
-                    .unwrap();
-        }
-        _ => {}
+        let _ = tauri::WindowBuilder::new(&handle, "about", tauri::WindowUrl::App("/about".into()))
+            .menu(Menu::new())
+            .inner_size(200., 200.)
+            .max_inner_size(200., 400.)
+            .resizable(false)
+            .build()
+            .unwrap();
     }
 }

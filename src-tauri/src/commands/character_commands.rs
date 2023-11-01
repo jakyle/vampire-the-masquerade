@@ -6,6 +6,6 @@ pub fn get_characters() -> Vec<models::dto::character::Character> {
 }
 
 #[tauri::command]
-pub fn get_character_by_id<'a>(id: &'a str) -> models::dto::character::Character {
+pub fn get_character_by_id(id: &str) -> models::dto::character::Character {
     select_character_by_id(id)
 }

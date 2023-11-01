@@ -17,7 +17,7 @@ pub fn select_characters() -> Vec<dto::character::Character> {
         .collect()
 }
 
-pub fn select_characters_by_ids(ids: &[&str]) -> Vec<db::character::Character> {
+pub fn select_characters_by_ids(ids: &[&str]) -> Vec<dto::character::Character> {
     let connection = &mut establish_db_connection();
 
     dsl::characters
@@ -25,6 +25,9 @@ pub fn select_characters_by_ids(ids: &[&str]) -> Vec<db::character::Character> {
         .filter(dsl::id.eq_any(ids))
         .load::<db::character::Character>(connection)
         .unwrap()
+        .into_iter()
+        .map(Into::into)
+        .collect()
 }
 
 pub fn select_character_by_id(id: &str) -> dto::character::Character {

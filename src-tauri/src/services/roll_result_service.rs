@@ -10,7 +10,7 @@ pub fn insert_new_dice_result(
 
     new_dice_result
         .iter()
-        .map(|die| db::dice_result::DiceResult::from(die))
+        .map(db::dice_result::DiceResult::from)
         .map(|die| {
             diesel::insert_into(dice_results::table)
                 .values(&die)
