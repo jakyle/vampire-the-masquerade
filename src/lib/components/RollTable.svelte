@@ -13,10 +13,8 @@
 	let elements = keys.toRecord((key) => key, null as HTMLElement | null);
 </script>
 
-<Tooltip el={rollEl} direction="left">
-	<div
-		class="flex flex-col divide-y-2  p-6 rounded gap-2 [&>ul]:flex [&>ul]:flex-row [&>ul]:gap-4"
-	>
+<Tooltip el={rollEl} direction="right">
+	<div class="flex flex-col divide-y-2 p-6 rounded gap-2 [&>ul]:flex [&>ul]:flex-row [&>ul]:gap-4">
 		<ul>
 			{#each roll.rolls as dice}
 				<li>
@@ -25,7 +23,7 @@
 			{/each}
 		</ul>
 
-		<div class="w-full border border-red-950"></div>
+		<div class="w-full border border-red-950" />
 
 		<ul>
 			{#each roll.hungerRolls as dice}
@@ -47,14 +45,14 @@
 		<th bind:this={elements.successes}>👍</th>
 		<th bind:this={elements.criticals}>💥</th>
 		<th bind:this={elements.messyCritical}>🦇</th>
-		<th bind:this={elements.bestialFailure}>💩</th>
+		<th bind:this={elements.beastialFailure}>💩</th>
 		<th bind:this={elements.succeeded}>🏁</th>
 	</tr>
 	<tr>
 		<td>{roll.successes}</td>
 		<td>{roll.criticals}</td>
 		<td>{roll.messyCritical ? '✅' : '❌'}</td>
-		<td>{roll.bestialFailure ? '✅' : '❌'}</td>
+		<td>{roll.beastialFailure ? '✅' : '❌'}</td>
 		<td>{roll.succeeded ? '✅' : '❌'}</td>
 	</tr>
 </table>

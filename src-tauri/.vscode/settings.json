@@ -1,4 +1,5 @@
 {
 	"rust-analyzer.checkOnSave": false,
-	"cSpell.words": ["beastial", "chrono", "criticals", "Insertable"]
+	"cSpell.words": ["beastial", "chrono", "criticals", "Insertable"],
+	"rust-analyzer.linkedProjects": [".\\Cargo.toml"]
 }

@@ -1,8 +1,9 @@
-use crate::models::db;
+use crate::{models::db, util::date_time::*};
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct AddActionLog {
     pub modifier: i32,
     pub difficulty: i32,
@@ -18,10 +19,13 @@ impl AddActionLog {
 }
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ActionLog {
     pub id: String,
     pub modifier: i32,
     pub difficulty: i32,
+
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub created_at: NaiveDateTime,
 }
 

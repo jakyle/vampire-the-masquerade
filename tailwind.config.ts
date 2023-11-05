@@ -8,6 +8,21 @@ export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		extend: {
+			colors: {
+				carnation: {
+					'50': '#ffcccc',
+					'100': '#ffbdbd',
+					'200': '#ffa4a4',
+					'300': '#fe7b7b',
+					'400': '#fe3434',
+					'500': '#f51919',
+					'600': '#c81919',
+					'700': '#a11212',
+					'800': '#7e1010',
+					'900': '#671414',
+					'950': '#250404'
+				}
+			},
 			gridTemplateRows: {
 				9: 'repeat(9, minmax(0, 1fr))'
 			},
@@ -33,9 +48,10 @@ export default {
 				'6': '1.5rem',
 				'7': '1.75rem',
 				'8': '2rem'
-			},
+			}
 		},
 		data: {
+			resize: 'state~="resize"',
 			circle: 'shape~="circle"',
 			square: 'shape~="square"',
 			horizontal: 'direction~="horizontal"',

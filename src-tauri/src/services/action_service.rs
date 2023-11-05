@@ -39,7 +39,10 @@ pub fn get_action_result(roll_info: &ActionInfo) -> Result<ActionResult, String>
                 .collect::<Result<Vec<_>, _>>()?;
 
             let roll_results = insert_new_dice_result(&results);
-            ActionResultType::Rolls(roll_results)
+            roll_results
+                .into_iter()
+                .map(Into::into)
+                .collect::<Vec<ActionResultType>>()
         }
         ActionType::Passive => {
             let results = characters
@@ -56,7 +59,10 @@ pub fn get_action_result(roll_info: &ActionInfo) -> Result<ActionResult, String>
                 .collect::<Result<Vec<_>, _>>()?;
 
             let passive_results = insert_new_passive_result(&results);
-            ActionResultType::Passives(passive_results)
+            passive_results
+                .into_iter()
+                .map(Into::into)
+                .collect::<Vec<ActionResultType>>()
         }
     };
 
@@ -100,9 +106,9 @@ fn roll_dice(
     let half_messy_critical = hunger_rolls.iter().filter(|&&roll| roll == 10).count();
     let half_critical = rolls.iter().filter(|&&roll| roll == 10).count();
     let criticals = ((half_messy_critical + half_critical) / 2) as i32;
-    let messy_critical = criticals > 0 && half_messy_critical > 0;
     let succeeded = successes >= difficulty;
-    let bestial_failure = hunger_rolls.iter().filter(|&&roll| roll == 1).count() >= 1 && !succeeded;
+    let messy_critical = succeeded && criticals > 0 && half_messy_critical > 0;
+    let bestial_failure = !succeeded && hunger_rolls.iter().filter(|&&roll| roll == 1).count() >= 1;
 
     Ok(AddDiceResult::new(
         successes,

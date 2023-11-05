@@ -1,6 +1,6 @@
-use super::character::Character;
-use crate::models::dto;
+use super::{action_log::ActionLog, character::Character};
 use crate::schema::passive_results;
+use crate::{models::dto, util::date_time::*};
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Queryable, Selectable, Identifiable, Associations, Serialize, Deserialize, Insertable)]
 #[diesel(table_name = passive_results)]
 #[diesel(belongs_to(Character))]
+#[diesel(belongs_to(ActionLog, foreign_key = log_id))]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct PassiveResult {
     pub id: String,
@@ -16,6 +17,8 @@ pub struct PassiveResult {
     pub succeeded: bool,
     pub hunger: i32,
     pub total: i32,
+
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub created_at: NaiveDateTime,
 }
 

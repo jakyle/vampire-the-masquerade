@@ -1,10 +1,10 @@
-use crate::models::dto;
 use crate::schema::characters;
+use crate::{models::dto, util::date_time::*};
 use chrono::NaiveDateTime;
 use diesel::{AsChangeset, Identifiable, Insertable, Queryable};
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Serialize, Insertable, Deserialize)]
+#[derive(Queryable, Insertable, Deserialize, Serialize)]
 #[diesel(table_name = characters)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Character {
@@ -57,11 +57,14 @@ pub struct Character {
 
     pub hunger: i32,
 
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub created_at: NaiveDateTime,
+
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub updated_at: NaiveDateTime,
 }
 
-#[derive(AsChangeset, Identifiable)]
+#[derive(Serialize, Deserialize, AsChangeset, Identifiable)]
 #[diesel(table_name = characters)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct UpdateCharacter {
@@ -110,6 +113,9 @@ pub struct UpdateCharacter {
     pub science: Option<i32>,
     pub technology: Option<i32>,
 
+    pub hunger: Option<i32>,
+
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub updated_at: NaiveDateTime,
 }
 
@@ -216,6 +222,8 @@ impl From<dto::character::UpdateCharacter> for UpdateCharacter {
             politics: value.politics,
             science: value.science,
             technology: value.technology,
+
+            hunger: value.hunger,
 
             updated_at: chrono::Utc::now().naive_utc(),
         }

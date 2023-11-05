@@ -1,9 +1,7 @@
+import type { ActionResultBase } from './action-result-base.model';
 import type { Character } from './character.model';
-import type { DiceResult } from './dice-result.model';
-import type { PassiveResult } from './passive.model';
 
 export type CharacterInfo = {
 	selected: boolean;
-	roll?: DiceResult;
-	passive?: PassiveResult;
+	actionResult?: ActionResultBase;
 } & Character;

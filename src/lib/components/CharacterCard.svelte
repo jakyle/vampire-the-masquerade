@@ -1,9 +1,11 @@
 <script lang="ts">
 	import type { CharacterInfo } from '../model/character-info.model';
 	import { createEventDispatcher } from 'svelte';
-	import Slider from './Slider.svelte';
 	import type { Hunger } from '../model/character.model';
 	import { selectedAttributeStore, selectedSkillStore } from '$lib/store/characters';
+	import DottedRange from './DottedRange.svelte';
+	import { isDiceResult } from '$lib/model/dice-result.model';
+	import { isPassiveResult } from '$lib/model/passive.model';
 
 	export let character: CharacterInfo;
 	let isDeleting: boolean;
@@ -33,12 +35,9 @@
 
 	const deleteWithId = (id: string) => dispatchDeleteCharacter('deleteCharacter', id);
 
-	const updateHunger = (event: unknown) => {
-		const eventX = event as Event & {
-			target: EventTarget & { value: Hunger | string };
-		};
+	const updateHunger = (event: CustomEvent<number>) => {
 		dispatchUpdateHunger('updateHunger', {
-			hunger: +eventX.target.value as Hunger,
+			hunger: event.detail as Hunger,
 			id: character.id
 		});
 	};
@@ -77,49 +76,49 @@
 				</button>
 			</div>
 
-			{#if character.roll}
+			{#if isDiceResult(character.actionResult)}
 				<table
 					class="ml-2 w-11/12 font-semibold text-white [&>tr]:border-b [&>tr]:border-b-stone-500"
 				>
 					<tr>
 						<td>successes</td>
-						<td>{character.roll.successes}</td>
+						<td>{character.actionResult.successes}</td>
 					</tr>
 
 					<tr>
 						<td>criticals</td>
-						<td>{character.roll.criticals}</td>
+						<td>{character.actionResult.criticals}</td>
 					</tr>
 
 					<tr>
 						<td>messy</td>
-						<td>{character.roll.messyCritical ? '✅' : '❌'}</td>
+						<td>{character.actionResult.messyCritical ? '✅' : '❌'}</td>
 					</tr>
 
 					<tr>
 						<td>bestial</td>
-						<td>{character.roll.bestialFailure ? '✅' : '❌'}</td>
+						<td>{character.actionResult.beastialFailure ? '✅' : '❌'}</td>
 					</tr>
 
 					<tr>
 						<td>succeeded</td>
-						<td>{character.roll.succeeded ? '✅' : '❌'}</td>
+						<td>{character.actionResult.succeeded ? '✅' : '❌'}</td>
 					</tr>
 				</table>
 			{/if}
 
-			{#if character.passive}
+			{#if isPassiveResult(character.actionResult)}
 				<table
 					class="ml-2 w-11/12 font-semibold text-white [&>tr]:border-b [&>tr]:border-b-stone-500"
 				>
 					<tr>
 						<td>succeeded</td>
-						<td>{character.passive.succeeded ? '✅' : '❌'}</td>
+						<td>{character.actionResult.succeeded ? '✅' : '❌'}</td>
 					</tr>
 
 					<tr>
 						<td>hunger</td>
-						<td>{character.passive.hunger}</td>
+						<td>{character.actionResult.hunger}</td>
 					</tr>
 				</table>
 			{/if}
@@ -143,26 +142,30 @@
 			</tr>
 		</table>
 		<div class="flex-none">
-			<Slider on:input={updateHunger} bind:value={character.hunger} label="Hunger" />
+			<DottedRange on:change={updateHunger} bind:value={character.hunger} label="Hunger" />
 		</div>
 	{:else}
 		<div class="flex flex-col justify-center items-center gap-4">
-			<div class="flex flex-col gap-2">
+			<div class="flex flex-col gap-6 px-8 py-4">
 				<div class="flex flex-col">
-					<h1 class="text-2xl text-white">Are you sure you want to delete character?</h1>
+					<h1 class="text-2xl text-white">
+						Are you sure you want to delete? <span class="uppercase animate-pulse text-yellow-500"
+							>this action cannot be undone</span
+						>
+					</h1>
 				</div>
-				<div class="w-full flex justify-around">
+				<div class="w-full flex flex-col gap-y-6">
 					<button
-						class="h-12 flex-none w-20 rounded bg-green-800 p-2 text-2xl text-white active:bg-green-950"
+						class="flex-none rounded bg-yellow-800 p-2 text-2xl text-white active:bg-yellow-950"
 						on:click={() => deleteWithId(character.id)}
 					>
-						✅
+						YES, DELETE THIS CHARACTER!
 					</button>
 					<button
-						class="h-12 flex-none w-20 rounded bg-red-800 p-2 text-2xl text-white active:bg-red-950"
+						class="flex-none rounded bg-blue-800 p-2 text-2xl text-white active:bg-blue-950"
 						on:click={() => (isDeleting = false)}
 					>
-						❌
+						NO, KEEP THIS CHARACTER
 					</button>
 				</div>
 			</div>

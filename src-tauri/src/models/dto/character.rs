@@ -1,8 +1,9 @@
-use crate::models::db;
+use crate::{models::db, util::date_time::*};
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Character {
     pub id: String,
     pub name: String,
@@ -53,10 +54,14 @@ pub struct Character {
 
     pub hunger: i32,
 
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub created_at: NaiveDateTime,
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub updated_at: NaiveDateTime,
 }
 
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct AddCharacter {
     pub name: String,
 
@@ -103,6 +108,8 @@ pub struct AddCharacter {
     pub technology: i32,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct UpdateCharacter {
     pub id: String,
     pub name: Option<String>,
@@ -148,6 +155,8 @@ pub struct UpdateCharacter {
     pub politics: Option<i32>,
     pub science: Option<i32>,
     pub technology: Option<i32>,
+
+    pub hunger: Option<i32>,
 }
 
 impl From<db::character::Character> for Character {

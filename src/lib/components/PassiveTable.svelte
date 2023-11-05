@@ -33,7 +33,6 @@
 		<td>{passive.hunger}</td>
 	</tr>
 </table>
-
 {#each keys as key}
 	<Tooltip el={elements[key]} direction="top">
 		{key}

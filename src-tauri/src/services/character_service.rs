@@ -1,4 +1,7 @@
 use crate::schema::characters::dsl;
+use crate::schema::characters::dsl::characters;
+use crate::schema::dice_results;
+use crate::schema::passive_results;
 use crate::{
     db::establish_db_connection,
     models::{db, dto},
@@ -40,46 +43,45 @@ pub fn select_character_by_id(id: &str) -> dto::character::Character {
         .into()
 }
 
-// pub fn insert_new_characters(
-//     characters: &[dto::character::AddCharacter],
-// ) -> dto::character::Character {
-//     let connection = &mut establish_db_connection();
+pub fn insert_new_character(character: dto::character::AddCharacter) -> dto::character::Character {
+    let connection = &mut establish_db_connection();
 
-//     let new_character = db::character::Character::default();
+    let new_character = db::character::Character::from(character);
 
-//     diesel::insert_into(characters::table)
-//         .values(&new_character)
-//         .get_result::<db::character::Character>(connection)
-//         .unwrap()
-//         .into()
-// }
+    diesel::insert_into(characters)
+        .values(&new_character)
+        .get_result::<db::character::Character>(connection)
+        .unwrap()
+        .into()
+}
 
-// pub fn insert_new_character(new_character: dto::character::AddCharacter) {
-//     let connection = &mut establish_db_connection();
+pub fn update_character(
+    update_character: dto::character::UpdateCharacter,
+) -> dto::character::Character {
+    let connection = &mut establish_db_connection();
+    let character = db::character::UpdateCharacter::from(update_character);
 
-//     let character = db::character::Character::from(new_character);
+    diesel::update(dsl::characters.find(&character.id))
+        .set(&character)
+        .get_result::<db::character::Character>(connection)
+        .unwrap()
+        .into()
+}
 
-//     diesel::insert_into(characters::table)
-//         .values(character)
-//         .execute(connection)
-//         .unwrap();
-// }
+pub fn remove_character(character_id: &str) {
+    let connection = &mut establish_db_connection();
 
-// pub fn update_character(update_character: dto::character::UpdateCharacter) {
-//     let connection = &mut establish_db_connection();
+    diesel::update(dice_results::table.filter(dice_results::character_id.eq(character_id)))
+        .set(dice_results::character_id.eq::<Option<String>>(None))
+        .execute(connection)
+        .unwrap();
 
-//     let character = db::character::UpdateCharacter::from(update_character);
+    diesel::update(passive_results::table.filter(passive_results::character_id.eq(character_id)))
+        .set(passive_results::character_id.eq::<Option<String>>(None))
+        .execute(connection)
+        .unwrap();
 
-//     diesel::update(dsl::characters.find(&character.id))
-//         .set(&character)
-//         .execute(connection)
-//         .unwrap();
-// }
-
-// pub fn delete_character(character_id: &str) {
-//     let connection = &mut establish_db_connection();
-
-//     diesel::delete(dsl::characters.find(character_id))
-//         .execute(connection)
-//         .unwrap();
-// }
+    diesel::delete(dsl::characters.find(character_id))
+        .execute(connection)
+        .unwrap();
+}

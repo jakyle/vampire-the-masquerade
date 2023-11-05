@@ -51,4 +51,8 @@ export type Character = {
 	technology: SkillValue;
 
 	hunger: Hunger;
+	createdAt: string;
+	updatedAt: string;
 };
+
+export type AddCharacter = Omit<Character, 'createdAt' | 'updatedAt'>;

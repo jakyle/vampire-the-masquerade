@@ -1,24 +1,24 @@
-import { isActionResultBase, type ActionResultBase } from "./action-result-base.model";
+import { isActionResultBase, type ActionResultBase } from './action-result-base.model';
 
 export interface DiceResult extends ActionResultBase {
 	successes: number;
 	criticals: number;
-	bestialFailure: boolean;
+	beastialFailure: boolean;
 	messyCritical: boolean;
 	succeeded: boolean;
 	rolls: number[];
 	hungerRolls: number[];
-};
+}
 
-export const isDiceResult = (result: ActionResultBase): result is DiceResult => {
+export const isDiceResult = (result?: ActionResultBase): result is DiceResult => {
 	const requiredKeys: Array<keyof DiceResult> = [
 		'successes',
 		'criticals',
-		'bestialFailure',
+		'beastialFailure',
 		'messyCritical',
 		'rolls',
 		'succeeded',
-		'hungerRolls',
+		'hungerRolls'
 	];
 
 	if (!isActionResultBase(result)) {
@@ -33,13 +33,14 @@ export const isDiceResult = (result: ActionResultBase): result is DiceResult => 
 
 	const record = result as DiceResult;
 
-	return typeof record?.successes === 'number' &&
+	return (
+		typeof record?.successes === 'number' &&
 		typeof record?.criticals === 'number' &&
-		typeof record?.bestialFailure === 'boolean' &&
+		typeof record?.beastialFailure === 'boolean' &&
 		typeof record?.messyCritical === 'boolean' &&
 		Array.isArray(record?.rolls) &&
-		record?.rolls.every(item => typeof item === 'number') &&
+		record?.rolls.every((item) => typeof item === 'number') &&
 		Array.isArray(record.hungerRolls) &&
-		record.hungerRolls?.every(item => typeof item === 'number');
-}
-
+		record.hungerRolls?.every((item) => typeof item === 'number')
+	);
+};

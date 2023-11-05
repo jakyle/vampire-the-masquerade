@@ -7,7 +7,15 @@ declare global {
 		// interface PageData {}
 		// interface Platform {}
 	}
-	type Primitive = string | number | boolean | symbol | undefined | null | ((...args: unknown[]) => unknown) | Array<unknown>;
+	type Primitive =
+		| string
+		| number
+		| boolean
+		| symbol
+		| undefined
+		| null
+		| ((...args: unknown[]) => unknown)
+		| Array<unknown>;
 
 	type KeyOfOrValue<T> = T extends Primitive ? T : keyof T | T[keyof T];
 
@@ -26,12 +34,18 @@ declare global {
 			value: UVal
 		): R;
 	}
+
+	interface Object {
+		filterDuplicatedProperties<T extends object>(obj: T): Partial<T>;
+		removeEmptyStringProperties<T extends object>(): Partial<T>;
+	}
+
 	interface String {
 		toTitleCase(): string;
 	}
 }
 
-export { };
+export {};
 
 /// <reference types="svelte" />
 /// <reference types="vite/client" />

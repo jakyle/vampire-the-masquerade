@@ -1,5 +1,5 @@
-use crate::models::dto::action_log::AddActionLog;
 use crate::schema::action_logs;
+use crate::{models::dto::action_log::AddActionLog, util::date_time::*};
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -11,6 +11,7 @@ pub struct ActionLog {
     pub id: String,
     pub modifier: i32,
     pub difficulty: i32,
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub created_at: NaiveDateTime,
 }
 
@@ -35,3 +36,5 @@ impl From<AddActionLog> for ActionLog {
         Self::new(modifier, difficulty)
     }
 }
+
+// 2023-11-03T20:05:48.671851700Z

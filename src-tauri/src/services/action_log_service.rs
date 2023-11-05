@@ -1,27 +1,59 @@
-use crate::schema::action_logs;
+use std::collections::HashMap;
+use std::rc::Rc;
+
 use crate::{
     db::establish_db_connection,
-    models::{db, dto},
+    models::db::dice_result::DiceResult,
+    models::{
+        action_result::{ActionResult, ActionResultType},
+        db::{self, passive_result::PassiveResult},
+        dto,
+    },
+    schema::action_logs,
 };
+
 use diesel::prelude::*;
 
-// pub fn select_dice_results() -> Vec<db::dice_result::DiceResult> {
-//     let connection = &mut establish_db_connection();
+pub fn select_action_logs_with_results() -> Vec<ActionResult> {
+    let connection = &mut establish_db_connection();
 
-//     dsl::dice_results
-//         .order(dsl::created_at.asc())
-//         .load::<db::dice_result::DiceResult>(connection)
-//         .unwrap()
-// }
+    let logs = action_logs::dsl::action_logs
+        .order(action_logs::dsl::created_at.desc())
+        .load::<db::action_log::ActionLog>(connection)
+        .unwrap();
 
-// pub fn select_dice_result_by_id(id: &str) -> db::dice_result::DiceResult {
-//     let connection = &mut establish_db_connection();
+    let dice_results = DiceResult::belonging_to(&logs)
+        .select(DiceResult::as_select())
+        .load(connection)
+        .unwrap()
+        .into_iter()
+        .map(ActionResultType::from);
 
-//     dsl::dice_results
-//         .find(id)
-//         .first::<db::dice_result::DiceResult>(connection)
-//         .unwrap()
-// }
+    let passive_results = PassiveResult::belonging_to(&logs)
+        .select(PassiveResult::as_select())
+        .load(connection)
+        .unwrap()
+        .into_iter()
+        .map(ActionResultType::from);
+
+    let mut results_by_log: HashMap<Rc<str>, Vec<ActionResultType>> =
+        HashMap::with_capacity(logs.len());
+    for result in dice_results.chain(passive_results) {
+        let log_id = Rc::<str>::from(result.get_log_id().unwrap());
+        results_by_log
+            .entry(log_id.clone())
+            .or_default()
+            .push(result);
+    }
+
+    logs.into_iter()
+        .map(|log| {
+            let log_id = Rc::from(log.id.as_str());
+            let combined_results = results_by_log.remove(&log_id).unwrap_or_default();
+            ActionResult::new(log.into(), combined_results)
+        })
+        .collect()
+}
 
 pub fn insert_new_action_log(
     new_action_log: dto::action_log::AddActionLog,
@@ -36,11 +68,3 @@ pub fn insert_new_action_log(
         .unwrap()
         .into()
 }
-
-// pub fn delete_dice_result(dice_result_id: &str) {
-//     let connection = &mut establish_db_connection();
-
-//     diesel::delete(dsl::action_logs.find(dice_result_id))
-//         .execute(connection)
-//         .unwrap();
-// }

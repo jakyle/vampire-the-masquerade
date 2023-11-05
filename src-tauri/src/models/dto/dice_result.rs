@@ -1,8 +1,14 @@
-use crate::models::{db, text_array::TextArray};
+use std::ops::DerefMut;
+
+use crate::{
+    models::{db, text_array::TextArray},
+    util::date_time::*,
+};
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DiceResult {
     pub id: String,
     pub character_id: Option<String>,
@@ -14,6 +20,8 @@ pub struct DiceResult {
     pub succeeded: bool,
     pub rolls: TextArray<i32>,
     pub hunger_rolls: TextArray<i32>,
+
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub created_at: NaiveDateTime,
 }
 
@@ -57,8 +65,11 @@ impl AddDiceResult {
 
 impl From<db::dice_result::DiceResult> for DiceResult {
     fn from(value: db::dice_result::DiceResult) -> Self {
-        let rolls = serde_json::from_str(&value.rolls).unwrap();
-        let hunger_rolls = serde_json::from_str(&value.hunger_rolls).unwrap();
+        let mut rolls: TextArray<i32> = serde_json::from_str(&value.rolls).unwrap();
+        let mut hunger_rolls: TextArray<i32> = serde_json::from_str(&value.hunger_rolls).unwrap();
+
+        rolls.deref_mut().sort();
+        hunger_rolls.deref_mut().sort();
 
         Self {
             id: value.id,

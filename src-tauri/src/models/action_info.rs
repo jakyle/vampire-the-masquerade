@@ -1,6 +1,7 @@
 use super::action_type::ActionType;
 
 #[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ActionInfo<'a> {
     pub skill: Option<&'a str>,
     pub attribute: Option<&'a str>,

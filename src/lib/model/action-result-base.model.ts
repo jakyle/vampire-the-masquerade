@@ -1,19 +1,14 @@
 export interface ActionResultBase {
-	id: string,
-	characterName: string;
+	id: string;
 	characterId: string;
-	createdAt: string,
+	logId: string;
+	createdAt: string;
 }
 
 export const isActionResultBase = (result: unknown): result is ActionResultBase => {
-	const requiredKeys: Array<keyof ActionResultBase> = [
-		'id',
-		'characterName',
-		'characterId',
-		'createdAt',
-	];
+	const requiredKeys: Array<keyof ActionResultBase> = ['id', 'characterId', 'createdAt', 'logId'];
 
-	if (typeof result !== 'object' || result === null) {
+	if (typeof result !== 'object' || result === undefined || result === null) {
 		return false;
 	}
 
@@ -25,8 +20,10 @@ export const isActionResultBase = (result: unknown): result is ActionResultBase 
 
 	const record = result as Record<string, unknown>;
 
-	return typeof record.id === 'string' &&
-		typeof record.characterName === 'string' &&
+	return (
+		typeof record.id === 'string' &&
 		typeof record.characterId === 'string' &&
-		typeof record.createdAt === 'string';
-}
+		typeof record.createdAt === 'string' &&
+		typeof record.logId === 'string'
+	);
+};

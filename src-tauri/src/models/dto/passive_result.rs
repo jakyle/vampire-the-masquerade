@@ -1,8 +1,9 @@
-use crate::models::db;
+use crate::{models::db, util::date_time::*};
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PassiveResult {
     pub id: String,
     pub character_id: Option<String>,
@@ -10,6 +11,8 @@ pub struct PassiveResult {
     pub succeeded: bool,
     pub hunger: i32,
     pub total: i32,
+
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub created_at: NaiveDateTime,
 }
 

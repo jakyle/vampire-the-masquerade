@@ -35,6 +35,30 @@ function toTitleCase() {
 	return finalResult;
 }
 
+function filterDuplicatedProperties<T extends object>(obj2: T): Partial<T> {
+	const result: Partial<T> = {};
+
+	for (const key in this) {
+		if (this[key] !== obj2[key]) {
+			result[key] = this[key];
+		}
+	}
+
+	return result;
+}
+
+function removeEmptyStringProperties<T extends object>(): Partial<T> {
+	const result: Partial<T> = {};
+
+	for (const key in this) {
+		if (this[key] !== '') {
+			result[key] = this[key];
+		}
+	}
+
+	return result;
+}
+
 export const addExtensions = () => {
 	if (!Array.prototype.tap) {
 		Array.prototype.tap = tap;
@@ -46,5 +70,13 @@ export const addExtensions = () => {
 
 	if (!String.prototype.toTitleCase) {
 		String.prototype.toTitleCase = toTitleCase;
+	}
+
+	if (!Object.prototype.filterDuplicatedProperties) {
+		Object.prototype.filterDuplicatedProperties = filterDuplicatedProperties;
+	}
+
+	if (!Object.prototype.removeEmptyStringProperties) {
+		Object.prototype.removeEmptyStringProperties = removeEmptyStringProperties;
 	}
 };

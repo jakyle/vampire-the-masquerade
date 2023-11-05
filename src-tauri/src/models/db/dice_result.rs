@@ -1,5 +1,5 @@
-use super::character::Character;
-use crate::{models::dto::dice_result::AddDiceResult, schema::dice_results};
+use super::{action_log::ActionLog, character::Character};
+use crate::{models::dto::dice_result::AddDiceResult, schema::dice_results, util::date_time::*};
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Queryable, Selectable, Identifiable, Associations, Serialize, Deserialize, Insertable)]
 #[diesel(table_name = dice_results)]
 #[diesel(belongs_to(Character))]
+#[diesel(belongs_to(ActionLog, foreign_key = log_id))]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct DiceResult {
     pub id: String,
@@ -19,6 +20,8 @@ pub struct DiceResult {
     pub succeeded: bool,
     pub rolls: String,
     pub hunger_rolls: String,
+
+    #[serde(serialize_with = "date_to_string", deserialize_with = "string_to_date")]
     pub created_at: NaiveDateTime,
 }
 
